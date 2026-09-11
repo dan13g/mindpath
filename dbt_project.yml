@@ -1,0 +1,18 @@
+name: mindpath_dv
+version: '1.0.0'
+config-version: 2
+profile: mindpath_dv
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+
+models:
+  mindpath_dv:
+    staging:
+      +database: MINDPATH_ENT_DW
+      +schema: STAGING
+      +materialized: view
+    raw_vault:
+      +database: MINDPATH_ENT_DW
+      +schema: RAW_VAULT
+      +materialized: incremental

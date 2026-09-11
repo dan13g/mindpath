@@ -1,0 +1,23 @@
+version: 2
+
+sources:
+  - name: mindpath_sqlserver
+    database: MINDPATH_RAW
+    schema: SQLSERVER
+    tables:
+      - name: clients
+      - name: organisations
+      - name: services
+      - name: contracts
+      - name: contract_services
+      - name: referrals
+      - name: assessments
+      - name: treatment_plans
+      - name: authorisations
+      - name: clinicians
+      - name: clinician_specialisms
+      - name: clinician_allocations
+      - name: sessions
+      - name: outcomes
+      - name: invoices
+      - name: invoice_lines
