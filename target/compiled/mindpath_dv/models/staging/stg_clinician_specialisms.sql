@@ -1,6 +1,0 @@
-SELECT
-    *,
-    _FIVETRAN_SYNCED AS load_datetime,
-    'MINDPATH_SQLSERVER' AS record_source
-FROM MINDPATH_RAW.SQLSERVER.clinician_specialisms
-WHERE COALESCE(_FIVETRAN_DELETED, FALSE) = FALSE
