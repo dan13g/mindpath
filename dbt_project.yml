@@ -1,5 +1,7 @@
 name: mindpath_dv
 version: '1.0.0'
+dbt-cloud:
+    project-id: 70506183166318
 config-version: 2
 profile: mindpath_dv
 
