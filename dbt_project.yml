@@ -1,12 +1,12 @@
 name: mindpath_dv
 version: '1.0.0'
-dbt-cloud:
-    project-id: 70506183166318
 config-version: 2
 profile: mindpath_dv
 
 model-paths: ["models"]
 macro-paths: ["macros"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
 
 models:
   mindpath_dv:
@@ -18,3 +18,9 @@ models:
       +database: MINDPATH_ENT_DW
       +schema: RAW_VAULT
       +materialized: incremental
+
+seeds:
+  mindpath_dv:
+    +database: MINDPATH_ENT_DW
+    +schema: REFERENCE
+    +quote_columns: false
