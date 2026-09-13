@@ -2,7 +2,7 @@
 WITH staged AS (
     SELECT
         hk_session,
-        {{ hashdiff(['session_date','session_status','delivery_method','duration_minutes']) }} AS hashdiff,
+        hd_session AS hashdiff,
         session_date,
         session_status,
         delivery_method,

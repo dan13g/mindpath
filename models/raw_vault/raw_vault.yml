@@ -1,70 +1,261 @@
 version: 2
+
 models:
   - name: hub_client
     columns:
       - name: hk_client
-        data_tests: [not_null, unique]
+        data_tests:
+          - not_null
+          - unique
+  - name: hub_organisation
+    columns:
+      - name: hk_organisation
+        data_tests:
+          - not_null
+          - unique
+  - name: hub_service
+    columns:
+      - name: hk_service
+        data_tests:
+          - not_null
+          - unique
+  - name: hub_contract
+    columns:
+      - name: hk_contract
+        data_tests:
+          - not_null
+          - unique
   - name: hub_referral
     columns:
       - name: hk_referral
-        data_tests: [not_null, unique]
+        data_tests:
+          - not_null
+          - unique
+  - name: hub_assessment
+    columns:
+      - name: hk_assessment
+        data_tests:
+          - not_null
+          - unique
+  - name: hub_treatment_plan
+    columns:
+      - name: hk_treatment_plan
+        data_tests:
+          - not_null
+          - unique
+  - name: hub_authorisation
+    columns:
+      - name: hk_authorisation
+        data_tests:
+          - not_null
+          - unique
+  - name: hub_clinician
+    columns:
+      - name: hk_clinician
+        data_tests:
+          - not_null
+          - unique
+  - name: hub_specialism
+    columns:
+      - name: hk_specialism
+        data_tests:
+          - not_null
+          - unique
+  - name: hub_allocation
+    columns:
+      - name: hk_allocation
+        data_tests:
+          - not_null
+          - unique
   - name: hub_session
     columns:
       - name: hk_session
-        data_tests: [not_null, unique]
-  - name: lnk_client_referral
-    columns:
-      - name: hk_client_referral
-        data_tests: [not_null, unique]
-  - name: lnk_referral_session
-    columns:
-      - name: hk_referral_session
-        data_tests: [not_null, unique]
-  - name: sat_client_details
-    columns:
-      - name: hk_client
         data_tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('hub_client')
-                field: hk_client
-
+          - unique
+  - name: hub_outcome
+    columns:
+      - name: hk_outcome
+        data_tests:
+          - not_null
+          - unique
   - name: hub_invoice
     columns:
       - name: hk_invoice
-        data_tests: [not_null, unique]
+        data_tests:
+          - not_null
+          - unique
   - name: hub_invoice_line
     columns:
       - name: hk_invoice_line
-        data_tests: [not_null, unique]
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_contract_organisation
+    columns:
+      - name: hk_contract_organisation
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_contract_service
+    columns:
+      - name: hk_contract_service
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_client_referral
+    columns:
+      - name: hk_client_referral
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_referral_organisation
+    columns:
+      - name: hk_referral_organisation
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_referral_contract
+    columns:
+      - name: hk_referral_contract
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_referral_assessment
+    columns:
+      - name: hk_referral_assessment
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_client_assessment
+    columns:
+      - name: hk_client_assessment
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_referral_treatment_plan
+    columns:
+      - name: hk_referral_treatment_plan
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_assessment_treatment_plan
+    columns:
+      - name: hk_assessment_treatment_plan
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_treatment_plan_service
+    columns:
+      - name: hk_treatment_plan_service
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_referral_authorisation
+    columns:
+      - name: hk_referral_authorisation
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_authorisation_contract
+    columns:
+      - name: hk_authorisation_contract
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_clinician_specialism
+    columns:
+      - name: hk_clinician_specialism
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_referral_allocation
+    columns:
+      - name: hk_referral_allocation
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_allocation_clinician
+    columns:
+      - name: hk_allocation_clinician
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_referral_session
+    columns:
+      - name: hk_referral_session
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_client_session
+    columns:
+      - name: hk_client_session
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_clinician_session
+    columns:
+      - name: hk_clinician_session
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_session_service
+    columns:
+      - name: hk_session_service
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_referral_outcome
+    columns:
+      - name: hk_referral_outcome
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_client_outcome
+    columns:
+      - name: hk_client_outcome
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_session_outcome
+    columns:
+      - name: hk_session_outcome
+        data_tests:
+          - not_null
+          - unique
   - name: lnk_invoice_organisation
     columns:
       - name: hk_invoice_organisation
-        data_tests: [not_null, unique]
+        data_tests:
+          - not_null
+          - unique
   - name: lnk_invoice_contract
     columns:
       - name: hk_invoice_contract
-        data_tests: [not_null, unique]
+        data_tests:
+          - not_null
+          - unique
   - name: lnk_invoice_invoice_line
     columns:
       - name: hk_invoice_invoice_line
-        data_tests: [not_null, unique]
-  - name: sat_invoice_details
-    columns:
-      - name: hk_invoice
         data_tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('hub_invoice')
-                field: hk_invoice
-  - name: sat_invoice_line_details
+          - unique
+  - name: lnk_invoice_line_referral
     columns:
-      - name: hk_invoice_line
+      - name: hk_invoice_line_referral
         data_tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('hub_invoice_line')
-                field: hk_invoice_line
+          - unique
+  - name: lnk_invoice_line_session
+    columns:
+      - name: hk_invoice_line_session
+        data_tests:
+          - not_null
+          - unique
+  - name: lnk_invoice_line_service
+    columns:
+      - name: hk_invoice_line_service
+        data_tests:
+          - not_null
+          - unique

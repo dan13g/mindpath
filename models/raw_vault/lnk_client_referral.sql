@@ -1,7 +1,7 @@
 {{ config(materialized='incremental') }}
 WITH incoming AS (
     SELECT DISTINCT
-        {{ hash_key(['client_id','referral_id']) }} AS hk_client_referral,
+        {{ hash_key(['client_id', 'referral_id']) }} AS hk_client_referral,
         hk_client,
         hk_referral,
         load_datetime,

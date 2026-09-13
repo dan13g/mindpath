@@ -8,11 +8,17 @@ WITH staged AS (
         load_datetime,
         record_source
     FROM {{ ref('stg_invoices') }}
-), deduped AS (
-    SELECT * FROM staged
-    QUALIFY ROW_NUMBER() OVER (PARTITION BY hk_invoice, hashdiff ORDER BY load_datetime) = 1
+),
+deduped AS (
+    SELECT *
+    FROM staged
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY hk_invoice, hashdiff
+        ORDER BY load_datetime
+    ) = 1
 )
-SELECT d.* FROM deduped d
+SELECT d.*
+FROM deduped d
 {% if is_incremental() %}
 WHERE NOT EXISTS (
     SELECT 1 FROM {{ this }} t

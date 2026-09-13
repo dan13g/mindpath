@@ -1,7 +1,7 @@
 {{ config(materialized='incremental') }}
 WITH incoming AS (
     SELECT DISTINCT
-        {{ hash_key(['session_id','service_id']) }} AS hk_session_service,
+        {{ hash_key(['session_id', 'service_id']) }} AS hk_session_service,
         hk_session,
         hk_service,
         load_datetime,

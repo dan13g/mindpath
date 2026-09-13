@@ -2,11 +2,12 @@
 WITH staged AS (
     SELECT
         hk_referral,
-        {{ hashdiff(['referral_date','referral_source','presenting_problem','priority','funding_type']) }} AS hashdiff,
+        hd_referral AS hashdiff,
         referral_date,
         referral_source,
         presenting_problem,
         priority,
+        referral_status,
         funding_type,
         load_datetime,
         record_source

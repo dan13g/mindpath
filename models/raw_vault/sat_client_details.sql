@@ -2,7 +2,7 @@
 WITH staged AS (
     SELECT
         hk_client,
-        {{ hashdiff(['nhs_number','first_name','last_name','date_of_birth','email','mobile','postcode','source_system']) }} AS hashdiff,
+        hd_client AS hashdiff,
         nhs_number,
         first_name,
         last_name,
@@ -10,6 +10,7 @@ WITH staged AS (
         email,
         mobile,
         postcode,
+        created_date,
         source_system,
         load_datetime,
         record_source
