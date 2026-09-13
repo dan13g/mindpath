@@ -1,9 +1,8 @@
-{{ config(materialized='incremental')}}
-
-with staged as (
-    select
+{{ config(materialized='incremental') }}
+WITH staged AS (
+    SELECT
         hk_client,
-        {{ hashdiff(['nhs_number','first_name','last_name','date_of_birth','email','mobile','postcode','source_system']) }} as hashdiff,
+        {{ hashdiff(['nhs_number','first_name','last_name','date_of_birth','email','mobile','postcode','source_system']) }} AS hashdiff,
         nhs_number,
         first_name,
         last_name,
@@ -14,25 +13,22 @@ with staged as (
         source_system,
         load_datetime,
         record_source
-    from {{ref('stg_clients')}}
+    FROM {{ ref('stg_clients') }}
 ),
-deduped as (
-    select *
-    from staged
-    qualify row_number() over(
-        partition by hk_client, hashdiff
-        order by load_datetime
+deduped AS (
+    SELECT *
+    FROM staged
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY hk_client, hashdiff
+        ORDER BY load_datetime
     ) = 1
 )
-
-select
-    d.*
-from deduped d
-{% if is_incremental()%}
-where not exists(
-        select 1 from {{this}} t
-        where t.hk_client = d.hk_client
-            and t.hashdiff = d.hashdiff
+SELECT d.*
+FROM deduped d
+{% if is_incremental() %}
+WHERE NOT EXISTS (
+    SELECT 1 FROM {{ this }} t
+    WHERE t.hk_client = d.hk_client
+      AND t.hashdiff = d.hashdiff
 )
-{% endif%}
-
+{% endif %}

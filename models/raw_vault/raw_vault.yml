@@ -1,0 +1,31 @@
+version: 2
+models:
+  - name: hub_client
+    columns:
+      - name: hk_client
+        data_tests: [not_null, unique]
+  - name: hub_referral
+    columns:
+      - name: hk_referral
+        data_tests: [not_null, unique]
+  - name: hub_session
+    columns:
+      - name: hk_session
+        data_tests: [not_null, unique]
+  - name: lnk_client_referral
+    columns:
+      - name: hk_client_referral
+        data_tests: [not_null, unique]
+  - name: lnk_referral_session
+    columns:
+      - name: hk_referral_session
+        data_tests: [not_null, unique]
+  - name: sat_client_details
+    columns:
+      - name: hk_client
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('hub_client')
+                field: hk_client

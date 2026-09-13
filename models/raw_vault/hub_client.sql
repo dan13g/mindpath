@@ -1,22 +1,18 @@
-{{ config(materialized='incremental')}}
-
-with incoming as (
-    select distinct
+{{ config(materialized='incremental') }}
+WITH incoming AS (
+    SELECT DISTINCT
         hk_client,
         client_id,
         load_datetime,
         record_source
-    from {{ref('stg_clients')}}
-    where client_id is not null
+    FROM {{ ref('stg_clients') }}
+    WHERE client_id IS NOT NULL
 )
-
-select
-    i.*
-from incoming i
-{% if is_incremental()%}
-where not exists(
-        select 1 from {{this}} t
-        where t.hk_client = i.hk_client
+SELECT i.*
+FROM incoming i
+{% if is_incremental() %}
+WHERE NOT EXISTS (
+    SELECT 1 FROM {{ this }} t
+    WHERE t.hk_client = i.hk_client
 )
-{% endif%}
-
+{% endif %}

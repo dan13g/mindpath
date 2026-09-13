@@ -1,19 +1,19 @@
 {{ config(materialized='incremental') }}
 WITH incoming AS (
     SELECT DISTINCT
-        {{ hash_key(['client_id','referral_id']) }} AS hk_client_referral,
-        hk_client,
+        {{ hash_key(['referral_id','contract_id']) }} AS hk_referral_contract,
         hk_referral,
+        hk_contract,
         load_datetime,
         record_source
     FROM {{ ref('stg_referrals') }}
-    WHERE client_id IS NOT NULL AND referral_id IS NOT NULL
+    WHERE referral_id IS NOT NULL AND contract_id IS NOT NULL
 )
 SELECT i.*
 FROM incoming i
 {% if is_incremental() %}
 WHERE NOT EXISTS (
     SELECT 1 FROM {{ this }} t
-    WHERE t.hk_client_referral = i.hk_client_referral
+    WHERE t.hk_referral_contract = i.hk_referral_contract
 )
 {% endif %}
