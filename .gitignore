@@ -7,6 +7,7 @@ profiles.yml
 # dbt-generated artifacts and installed packages
 target/
 dbt_packages/
+dbt_internal_packages/
 logs/
 
 # Python environments and caches
@@ -21,3 +22,4 @@ __pycache__/
 .idea/
 .DS_Store
 Thumbs.db
+dbt_internal_packages/
