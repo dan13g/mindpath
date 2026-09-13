@@ -18,3 +18,16 @@ models:
         data_tests: [not_null]
       - name: hk_session
         data_tests: [not_null]
+
+  - name: stg_invoices
+    columns:
+      - name: invoice_id
+        data_tests: [not_null]
+      - name: hk_invoice
+        data_tests: [not_null]
+  - name: stg_invoice_lines
+    columns:
+      - name: invoice_line_id
+        data_tests: [not_null]
+      - name: hk_invoice_line
+        data_tests: [not_null]

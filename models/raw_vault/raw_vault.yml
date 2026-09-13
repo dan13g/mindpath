@@ -29,3 +29,42 @@ models:
               arguments:
                 to: ref('hub_client')
                 field: hk_client
+
+  - name: hub_invoice
+    columns:
+      - name: hk_invoice
+        data_tests: [not_null, unique]
+  - name: hub_invoice_line
+    columns:
+      - name: hk_invoice_line
+        data_tests: [not_null, unique]
+  - name: lnk_invoice_organisation
+    columns:
+      - name: hk_invoice_organisation
+        data_tests: [not_null, unique]
+  - name: lnk_invoice_contract
+    columns:
+      - name: hk_invoice_contract
+        data_tests: [not_null, unique]
+  - name: lnk_invoice_invoice_line
+    columns:
+      - name: hk_invoice_invoice_line
+        data_tests: [not_null, unique]
+  - name: sat_invoice_details
+    columns:
+      - name: hk_invoice
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('hub_invoice')
+                field: hk_invoice
+  - name: sat_invoice_line_details
+    columns:
+      - name: hk_invoice_line
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('hub_invoice_line')
+                field: hk_invoice_line
