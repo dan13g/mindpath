@@ -1,0 +1,36 @@
+version: 2
+models:
+  - name: bv_client_current
+    columns:
+      - name: hk_client
+        tests: [not_null, unique]
+  - name: bv_referral_current
+    columns:
+      - name: hk_referral
+        tests: [not_null, unique]
+  - name: bv_master_client
+    columns:
+      - name: source_hk_client
+        tests: [not_null, unique]
+      - name: hk_master_client
+        tests: [not_null]
+  - name: bv_referral_lifecycle
+    columns:
+      - name: hk_referral
+        tests: [not_null, unique]
+  - name: bv_treatment_episode
+    columns:
+      - name: hk_referral
+        tests: [not_null, unique]
+  - name: bv_invoice_summary
+    columns:
+      - name: hk_invoice
+        tests: [not_null, unique]
+  - name: bv_referral_finance
+    columns:
+      - name: hk_referral
+        tests: [not_null, unique]
+  - name: bv_client_journey
+    columns:
+      - name: hk_referral
+        tests: [not_null, unique]

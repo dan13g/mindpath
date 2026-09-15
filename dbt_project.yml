@@ -18,6 +18,10 @@ models:
       +database: MINDPATH_ENT_DW
       +schema: RAW_VAULT
       +materialized: incremental
+    business_vault:
+      +database: MINDPATH_ENT_DW
+      +schema: BUSINESS_VAULT
+      +materialized: table
 
 seeds:
   mindpath_dv:
