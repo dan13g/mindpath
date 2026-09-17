@@ -12,10 +12,14 @@ WITH bounds AS (
             CURRENT_DATE()
         ) AS max_date
     FROM {{ ref('bv_client_journey') }}
-), dates AS (
+), generated_dates AS (
     SELECT DATEADD(day, SEQ4(), b.min_date)::DATE AS date_day
     FROM bounds b, TABLE(GENERATOR(ROWCOUNT => 10000))
-    QUALIFY date_day <= DATEADD(year, 2, b.max_date)
+), dates AS (
+    SELECT g.date_day
+    FROM generated_dates g
+    CROSS JOIN bounds b
+    WHERE g.date_day <= DATEADD(year, 2, b.max_date)
 )
 SELECT
     TO_NUMBER(TO_CHAR(date_day, 'YYYYMMDD')) AS date_key,
