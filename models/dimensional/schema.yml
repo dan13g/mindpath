@@ -1,0 +1,78 @@
+version: 2
+models:
+  - name: dim_date
+    columns:
+      - name: date_key
+        tests: [not_null, unique]
+  - name: dim_client
+    columns:
+      - name: client_key
+        tests: [not_null, unique]
+  - name: dim_organisation
+    columns:
+      - name: organisation_key
+        tests: [not_null, unique]
+  - name: dim_contract
+    columns:
+      - name: contract_key
+        tests: [not_null, unique]
+  - name: dim_service
+    columns:
+      - name: service_key
+        tests: [not_null, unique]
+  - name: dim_clinician
+    columns:
+      - name: clinician_key
+        tests: [not_null, unique]
+  - name: dim_specialism
+    columns:
+      - name: specialism_key
+        tests: [not_null, unique]
+  - name: dim_referral
+    columns:
+      - name: referral_key
+        tests: [not_null, unique]
+  - name: dim_assessment
+    columns:
+      - name: assessment_key
+        tests: [not_null, unique]
+  - name: dim_treatment_plan
+    columns:
+      - name: treatment_plan_key
+        tests: [not_null, unique]
+  - name: fact_referral
+    columns:
+      - name: referral_key
+        tests: [not_null, unique]
+  - name: fact_assessment
+    columns:
+      - name: assessment_key
+        tests: [not_null, unique]
+  - name: fact_treatment_plan
+    columns:
+      - name: treatment_plan_key
+        tests: [not_null, unique]
+  - name: fact_authorisation
+    columns:
+      - name: authorisation_key
+        tests: [not_null, unique]
+  - name: fact_clinician_allocation
+    columns:
+      - name: allocation_key
+        tests: [not_null, unique]
+  - name: fact_session
+    columns:
+      - name: session_key
+        tests: [not_null, unique]
+  - name: fact_outcome
+    columns:
+      - name: outcome_key
+        tests: [not_null, unique]
+  - name: fact_invoice
+    columns:
+      - name: invoice_key
+        tests: [not_null, unique]
+  - name: fact_invoice_line
+    columns:
+      - name: invoice_line_key
+        tests: [not_null, unique]

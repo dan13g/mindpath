@@ -22,6 +22,16 @@ models:
       +database: MINDPATH_ENT_DW
       +schema: BUSINESS_VAULT
       +materialized: table
+    dimensional:
+      +database: MINDPATH_DIM_DW
+      +schema: CORE
+      +materialized: table
+      dimensions:
+        +schema: DIMENSIONS
+      facts:
+        +schema: FACTS
+      bridges:
+        +schema: BRIDGES
 
 seeds:
   mindpath_dv:
