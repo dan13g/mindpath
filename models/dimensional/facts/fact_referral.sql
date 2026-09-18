@@ -1,26 +1,51 @@
 {{ config(materialized='table') }}
-WITH client_map AS (
-    SELECT hk_referral, MIN(hk_master_client) AS client_key
-    FROM {{ ref('bridge_master_client_referral') }} GROUP BY hk_referral
-), service_map AS (
-    SELECT rt.hk_referral, MIN(ts.hk_service) AS service_key
+
+WITH client_relationship AS (
+    SELECT
+        b.hk_referral,
+        MIN(b.hk_master_client) AS hk_master_client
+    FROM {{ ref('bridge_master_client_referral') }} b
+    GROUP BY b.hk_referral
+),
+organisation_relationship AS (
+    SELECT
+        hk_referral,
+        MIN(hk_organisation) AS hk_organisation
+    FROM {{ ref('lnk_referral_organisation') }}
+    GROUP BY hk_referral
+),
+contract_relationship AS (
+    SELECT
+        hk_referral,
+        MIN(hk_contract) AS hk_contract
+    FROM {{ ref('lnk_referral_contract') }}
+    GROUP BY hk_referral
+),
+service_relationship AS (
+    SELECT
+        rt.hk_referral,
+        MIN(ts.hk_service) AS hk_service
     FROM {{ ref('lnk_referral_treatment_plan') }} rt
-    JOIN {{ ref('lnk_treatment_plan_service') }} ts ON rt.hk_treatment_plan=ts.hk_treatment_plan
+    JOIN {{ ref('lnk_treatment_plan_service') }} ts
+      ON rt.hk_treatment_plan = ts.hk_treatment_plan
     GROUP BY rt.hk_referral
 )
+
 SELECT
-    j.hk_referral AS referral_key,
+    dr.referral_key,
     j.referral_id,
-    cm.client_key,
-    ro.hk_organisation AS organisation_key,
-    rc.hk_contract AS contract_key,
-    sm.service_key,
-    TO_NUMBER(TO_CHAR(j.referral_date,'YYYYMMDD')) AS referral_date_key,
-    TO_NUMBER(TO_CHAR(j.first_assessment_date,'YYYYMMDD')) AS first_assessment_date_key,
-    TO_NUMBER(TO_CHAR(j.first_session_date,'YYYYMMDD')) AS first_session_date_key,
+    dc.client_key,
+    do.organisation_key,
+    dco.contract_key,
+    ds.service_key,
+    d_ref.date_key AS referral_date_key,
+    d_ass.date_key AS first_assessment_date_key,
+    d_sess.date_key AS first_session_date_key,
+
     1 AS referral_count,
-    IFF(j.first_assessment_date IS NOT NULL,1,0) AS assessed_referral_count,
-    IFF(j.first_session_date IS NOT NULL,1,0) AS started_treatment_count,
+    IFF(j.first_assessment_date IS NOT NULL, 1, 0) AS assessed_referral_count,
+    IFF(j.first_session_date IS NOT NULL, 1, 0) AS started_treatment_count,
+
     j.total_sessions,
     j.completed_sessions,
     j.dna_sessions,
@@ -30,8 +55,37 @@ SELECT
     j.authorised_sessions,
     j.remaining_sessions,
     j.total_billed
+
 FROM {{ ref('bv_client_journey') }} j
-LEFT JOIN client_map cm ON j.hk_referral=cm.hk_referral
-LEFT JOIN {{ ref('lnk_referral_organisation') }} ro ON j.hk_referral=ro.hk_referral
-LEFT JOIN {{ ref('lnk_referral_contract') }} rc ON j.hk_referral=rc.hk_referral
-LEFT JOIN service_map sm ON j.hk_referral=sm.hk_referral
+
+-- Resolve the referral itself through DIM_REFERRAL.
+JOIN {{ ref('dim_referral') }} dr
+  ON j.hk_referral = dr.referral_key
+
+-- Raw/BV structures establish relationships; dimensions provide fact FKs.
+LEFT JOIN client_relationship cr
+  ON j.hk_referral = cr.hk_referral
+LEFT JOIN {{ ref('dim_client') }} dc
+  ON cr.hk_master_client = dc.client_key
+
+LEFT JOIN organisation_relationship org_r
+  ON j.hk_referral = org_r.hk_referral
+LEFT JOIN {{ ref('dim_organisation') }} do
+  ON org_r.hk_organisation = do.organisation_key
+
+LEFT JOIN contract_relationship con_r
+  ON j.hk_referral = con_r.hk_referral
+LEFT JOIN {{ ref('dim_contract') }} dco
+  ON con_r.hk_contract = dco.contract_key
+
+LEFT JOIN service_relationship svc_r
+  ON j.hk_referral = svc_r.hk_referral
+LEFT JOIN {{ ref('dim_service') }} ds
+  ON svc_r.hk_service = ds.service_key
+
+LEFT JOIN {{ ref('dim_date') }} d_ref
+  ON j.referral_date = d_ref.date_day
+LEFT JOIN {{ ref('dim_date') }} d_ass
+  ON j.first_assessment_date = d_ass.date_day
+LEFT JOIN {{ ref('dim_date') }} d_sess
+  ON j.first_session_date = d_sess.date_day

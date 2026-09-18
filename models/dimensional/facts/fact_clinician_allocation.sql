@@ -1,12 +1,36 @@
 {{ config(materialized='table') }}
-WITH referral AS (
- SELECT hk_allocation,MIN(hk_referral) referral_key FROM {{ ref('lnk_referral_allocation') }} GROUP BY hk_allocation
-), clinician AS (
- SELECT hk_allocation,MIN(hk_clinician) clinician_key FROM {{ ref('lnk_allocation_clinician') }} GROUP BY hk_allocation
+
+WITH referral_relationship AS (
+    SELECT hk_allocation, MIN(hk_referral) AS hk_referral
+    FROM {{ ref('lnk_referral_allocation') }}
+    GROUP BY hk_allocation
+),
+clinician_relationship AS (
+    SELECT hk_allocation, MIN(hk_clinician) AS hk_clinician
+    FROM {{ ref('lnk_allocation_clinician') }}
+    GROUP BY hk_allocation
 )
-SELECT a.hk_allocation AS allocation_key,a.allocation_id,r.referral_key,c.clinician_key,
-       TO_NUMBER(TO_CHAR(a.allocation_date,'YYYYMMDD')) allocation_date_key,
-       1 allocation_count,a.allocation_status
+
+SELECT
+    a.hk_allocation AS allocation_key,
+    a.allocation_id,
+    dr.referral_key,
+    dc.clinician_key,
+    dd.date_key AS allocation_date_key,
+    1 AS allocation_count,
+    a.allocation_status
+
 FROM {{ ref('bv_allocation_current') }} a
-LEFT JOIN referral r ON a.hk_allocation=r.hk_allocation
-LEFT JOIN clinician c ON a.hk_allocation=c.hk_allocation
+
+LEFT JOIN referral_relationship rr
+  ON a.hk_allocation = rr.hk_allocation
+LEFT JOIN {{ ref('dim_referral') }} dr
+  ON rr.hk_referral = dr.referral_key
+
+LEFT JOIN clinician_relationship cr
+  ON a.hk_allocation = cr.hk_allocation
+LEFT JOIN {{ ref('dim_clinician') }} dc
+  ON cr.hk_clinician = dc.clinician_key
+
+LEFT JOIN {{ ref('dim_date') }} dd
+  ON a.allocation_date = dd.date_day
