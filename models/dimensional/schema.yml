@@ -4,420 +4,514 @@ models:
   - name: dim_date
     columns:
       - name: date_key
-        tests: [not_null, unique]
+        data_tests:
+          - not_null
+          - unique
+          - dbt_expectations.expect_column_values_to_not_be_null
+          - dbt_expectations.expect_column_values_to_be_unique
 
   - name: dim_client
     columns:
       - name: client_key
-        tests: [not_null, unique]
+        data_tests:
+          - not_null
+          - unique
+          - dbt_expectations.expect_column_values_to_not_be_null
+          - dbt_expectations.expect_column_values_to_be_unique
 
   - name: dim_organisation
     columns:
       - name: organisation_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
 
   - name: dim_contract
     columns:
       - name: contract_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
       - name: organisation_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_organisation')
+                to: "{{ ref('dim_organisation') }}"
                 field: organisation_key
 
   - name: dim_service
     columns:
       - name: service_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
 
   - name: dim_clinician
     columns:
       - name: clinician_key
-        tests: [not_null, unique]
+        data_tests:
+          - not_null
+          - unique
+          - dbt_expectations.expect_column_values_to_not_be_null
+          - dbt_expectations.expect_column_values_to_be_unique
 
   - name: dim_specialism
     columns:
       - name: specialism_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
 
   - name: dim_referral
     columns:
       - name: referral_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
 
   - name: dim_assessment
     columns:
       - name: assessment_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
 
   - name: dim_treatment_plan
     columns:
       - name: treatment_plan_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
 
   - name: dim_outcome_measure
     columns:
       - name: outcome_measure_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
 
   - name: dim_session_status
     columns:
       - name: session_status_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
 
   - name: dim_delivery_method
     columns:
       - name: delivery_method_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
 
   - name: dim_invoice
     columns:
       - name: invoice_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
 
   - name: fact_referral
     columns:
+      - name: referral_id
+        data_tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+          - dbt_expectations.expect_column_values_to_be_unique
+      - name: referral_count
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_in_set:
+              arguments:
+                value_set: [1]
+      - name: days_to_assessment
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 3650
+                row_condition: "days_to_assessment is not null"
+      - name: days_to_first_session
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 3650
+                row_condition: "days_to_first_session is not null"
       - name: referral_key
-        tests:
+        data_tests:
           - not_null
           - unique
           - relationships:
               arguments:
-                to: ref('dim_referral')
+                to: "{{ ref('dim_referral') }}"
                 field: referral_key
       - name: client_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_client')
+                to: "{{ ref('dim_client') }}"
                 field: client_key
       - name: organisation_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_organisation')
+                to: "{{ ref('dim_organisation') }}"
                 field: organisation_key
       - name: contract_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_contract')
+                to: "{{ ref('dim_contract') }}"
                 field: contract_key
       - name: service_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_service')
+                to: "{{ ref('dim_service') }}"
                 field: service_key
       - name: referral_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
       - name: first_assessment_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
       - name: first_session_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
 
   - name: fact_assessment
     columns:
       - name: assessment_key
-        tests:
+        data_tests:
           - not_null
           - unique
           - relationships:
               arguments:
-                to: ref('dim_assessment')
+                to: "{{ ref('dim_assessment') }}"
                 field: assessment_key
       - name: referral_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_referral')
+                to: "{{ ref('dim_referral') }}"
                 field: referral_key
       - name: client_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_client')
+                to: "{{ ref('dim_client') }}"
                 field: client_key
       - name: assessment_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
 
   - name: fact_treatment_plan
     columns:
       - name: treatment_plan_key
-        tests:
+        data_tests:
           - not_null
           - unique
           - relationships:
               arguments:
-                to: ref('dim_treatment_plan')
+                to: "{{ ref('dim_treatment_plan') }}"
                 field: treatment_plan_key
       - name: referral_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_referral')
+                to: "{{ ref('dim_referral') }}"
                 field: referral_key
       - name: assessment_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_assessment')
+                to: "{{ ref('dim_assessment') }}"
                 field: assessment_key
       - name: service_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_service')
+                to: "{{ ref('dim_service') }}"
                 field: service_key
       - name: plan_start_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
 
   - name: fact_authorisation
     columns:
       - name: authorisation_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
       - name: referral_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_referral')
+                to: "{{ ref('dim_referral') }}"
                 field: referral_key
       - name: contract_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_contract')
+                to: "{{ ref('dim_contract') }}"
                 field: contract_key
       - name: authorisation_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
       - name: expiry_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
 
   - name: fact_clinician_allocation
     columns:
       - name: allocation_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
       - name: referral_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_referral')
+                to: "{{ ref('dim_referral') }}"
                 field: referral_key
       - name: clinician_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_clinician')
+                to: "{{ ref('dim_clinician') }}"
                 field: clinician_key
       - name: allocation_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
 
   - name: fact_session
+    description: "Mindpath session-grain fact with operational DQ expectations."
+    data_tests:
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          arguments:
+            min_value: 1
     columns:
+      - name: session_id
+        data_tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+          - dbt_expectations.expect_column_values_to_be_unique
+      - name: duration_minutes
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 600
+                row_condition: "duration_minutes is not null"
+      - name: completed_session_count
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_in_set:
+              arguments:
+                value_set: [0, 1]
+      - name: dna_session_count
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_in_set:
+              arguments:
+                value_set: [0, 1]
       - name: session_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
       - name: referral_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_referral')
+                to: "{{ ref('dim_referral') }}"
                 field: referral_key
       - name: client_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_client')
+                to: "{{ ref('dim_client') }}"
                 field: client_key
       - name: clinician_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_clinician')
+                to: "{{ ref('dim_clinician') }}"
                 field: clinician_key
       - name: service_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_service')
+                to: "{{ ref('dim_service') }}"
                 field: service_key
       - name: session_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
       - name: session_status_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_session_status')
+                to: "{{ ref('dim_session_status') }}"
                 field: session_status_key
       - name: delivery_method_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_delivery_method')
+                to: "{{ ref('dim_delivery_method') }}"
                 field: delivery_method_key
 
   - name: fact_outcome
     columns:
+      - name: outcome_id
+        data_tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+          - dbt_expectations.expect_column_values_to_be_unique
+      - name: score
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+                row_condition: "score is not null"
       - name: outcome_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
       - name: referral_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_referral')
+                to: "{{ ref('dim_referral') }}"
                 field: referral_key
       - name: client_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_client')
+                to: "{{ ref('dim_client') }}"
                 field: client_key
       - name: outcome_measure_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_outcome_measure')
+                to: "{{ ref('dim_outcome_measure') }}"
                 field: outcome_measure_key
       - name: measurement_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
 
   - name: fact_invoice
     columns:
       - name: invoice_key
-        tests:
+        data_tests:
           - not_null
           - unique
           - relationships:
               arguments:
-                to: ref('dim_invoice')
+                to: "{{ ref('dim_invoice') }}"
                 field: invoice_key
       - name: organisation_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_organisation')
+                to: "{{ ref('dim_organisation') }}"
                 field: organisation_key
       - name: contract_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_contract')
+                to: "{{ ref('dim_contract') }}"
                 field: contract_key
       - name: invoice_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
 
   - name: fact_invoice_line
     columns:
+      - name: invoice_line_id
+        data_tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+          - dbt_expectations.expect_column_values_to_be_unique
+      - name: quantity
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                row_condition: "quantity is not null"
+      - name: unit_price
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                row_condition: "unit_price is not null"
+      - name: line_amount
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                row_condition: "line_amount is not null"
       - name: invoice_line_key
-        tests: [not_null, unique]
+        data_tests: [not_null, unique]
       - name: invoice_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_invoice')
+                to: "{{ ref('dim_invoice') }}"
                 field: invoice_key
       - name: referral_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_referral')
+                to: "{{ ref('dim_referral') }}"
                 field: referral_key
       - name: service_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_service')
+                to: "{{ ref('dim_service') }}"
                 field: service_key
       - name: organisation_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_organisation')
+                to: "{{ ref('dim_organisation') }}"
                 field: organisation_key
       - name: contract_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_contract')
+                to: "{{ ref('dim_contract') }}"
                 field: contract_key
       - name: invoice_date_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_date')
+                to: "{{ ref('dim_date') }}"
                 field: date_key
 
   - name: bridge_clinician_specialism
     columns:
       - name: clinician_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_clinician')
+                to: "{{ ref('dim_clinician') }}"
                 field: clinician_key
       - name: specialism_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_specialism')
+                to: "{{ ref('dim_specialism') }}"
                 field: specialism_key
 
   - name: bridge_contract_service
     columns:
       - name: contract_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_contract')
+                to: "{{ ref('dim_contract') }}"
                 field: contract_key
       - name: service_key
-        tests:
+        data_tests:
           - relationships:
               arguments:
-                to: ref('dim_service')
+                to: "{{ ref('dim_service') }}"
                 field: service_key
