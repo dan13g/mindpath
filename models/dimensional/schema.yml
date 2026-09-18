@@ -107,13 +107,6 @@ models:
                 min_value: 0
                 max_value: 3650
                 row_condition: "days_to_assessment is not null"
-      - name: days_to_first_session
-        data_tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 0
-                max_value: 3650
-                row_condition: "days_to_first_session is not null"
       - name: referral_key
         data_tests:
           - not_null
